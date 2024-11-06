@@ -21,12 +21,11 @@ public class JwtUtil {
         HashMap<String, Object> map = new HashMap<>();
         //you can put any data in the map
         map.put(USER_NAME, userId);
-        String jwt = Jwts.builder()
+        return Jwts.builder()
                 .setClaims(map)
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET)
-                .compact();
-        return jwt; //jwt前面一般都会加Bearer
+                .compact(); //jwt前面一般都会加Bearer
     }
 
     public static HttpServletRequest validateTokenAndAddUserIdToHeader(HttpServletRequest request) {
@@ -60,7 +59,7 @@ public class JwtUtil {
         @Override
         public Enumeration<String> getHeaders(String name) {
             if (claims != null && claims.containsKey(name)) {
-                return Collections.enumeration(Arrays.asList(claims.get(name)));
+                return Collections.enumeration(Collections.singletonList(claims.get(name)));
             }
             return super.getHeaders(name);
         }

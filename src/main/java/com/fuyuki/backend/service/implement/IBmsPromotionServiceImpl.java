@@ -1,4 +1,4 @@
-package com.fuyuki.backend.service.impl;
+package com.fuyuki.backend.service.implement;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fuyuki.backend.mapper.BmsPromotionMapper;

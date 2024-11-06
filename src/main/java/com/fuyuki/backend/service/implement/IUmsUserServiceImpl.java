@@ -1,4 +1,4 @@
-package com.fuyuki.backend.service.impl;
+package com.fuyuki.backend.service.implement;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -11,8 +11,6 @@ import com.fuyuki.backend.model.entity.UmsUser;
 import com.fuyuki.backend.service.IUmsUserService;
 import com.fuyuki.backend.utils.MD5Utils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -45,7 +43,7 @@ public class IUmsUserServiceImpl extends ServiceImpl<UmsUserMapper, UmsUser> imp
                 .password(MD5Utils.getPwd(dto.getPass()))
                 .email(dto.getEmail())
                 .createTime(new Date())
-                .status(true)
+                .status(Boolean.TRUE)
                 .build();
         baseMapper.insert(addUser);
 

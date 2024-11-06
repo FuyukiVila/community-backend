@@ -20,7 +20,7 @@ import static com.fuyuki.backend.jwt.JwtUtil.USER_NAME;
 public class UmsUserController extends BaseController {
     @Resource
     private IUmsUserService iUmsUserService;
-    @Resource
+//    @Resource
 //    private IBmsPostService iBmsPostService;
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
