@@ -30,8 +30,8 @@
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <mybatis-plus.version>3.4.2</mybatis-plus.version>
-        <fastjson.version>2.0.53</fastjson.version>
+        <mybatis-plus.version>3.5.7</mybatis-plus.version>
+        <fastjson2.version>2.0.53</fastjson2.version>
         <hutool.version>5.8.32</hutool.version>
         <jwt.version>0.9.1</jwt.version>
         <emoji-java.version>5.1.1</emoji-java.version>
@@ -98,9 +98,9 @@
         </dependency>
         <!--fastjson-->
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>${fastjson2.version}</version>
         </dependency>
         <!--yaml-->
         <dependency>
@@ -131,6 +131,17 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>4.0.5</version>
+        </dependency>
 
 
     </dependencies>

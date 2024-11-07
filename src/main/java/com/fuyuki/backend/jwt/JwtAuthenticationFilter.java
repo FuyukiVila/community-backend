@@ -4,6 +4,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -34,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (isProtectedUrl(request)) {
 //                System.out.println(request.getMethod());
                 if (!request.getMethod().equals("OPTIONS"))
-                    request = (HttpServletRequest) JwtUtil.validateTokenAndAddUserIdToHeader(request);
+                    request = JwtUtil.validateTokenAndAddUserIdToHeader(request);
             }
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
