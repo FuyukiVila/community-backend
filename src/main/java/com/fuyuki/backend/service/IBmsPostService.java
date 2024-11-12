@@ -2,11 +2,10 @@ package com.fuyuki.backend.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.fuyuki.backend.model.dto.CreateTopicDTO;
 import com.fuyuki.backend.model.entity.BmsPost;
+import com.fuyuki.backend.model.entity.UmsUser;
 import com.fuyuki.backend.model.vo.PostVO;
-
-
-import java.util.List;
 
 
 public interface IBmsPostService extends IService<BmsPost> {
@@ -26,7 +25,7 @@ public interface IBmsPostService extends IService<BmsPost> {
      * @param principal
      * @return
      */
-//    BmsPost create(CreateTopicDTO dto, UmsUser principal);
+    BmsPost create(CreateTopicDTO dto, UmsUser principal);
 
     /**
      * 查看话题详情

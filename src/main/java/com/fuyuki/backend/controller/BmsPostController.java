@@ -2,6 +2,7 @@ package com.fuyuki.backend.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fuyuki.backend.common.api.ApiResult;
+import com.fuyuki.backend.model.dto.CreateTopicDTO;
 import com.fuyuki.backend.model.entity.BmsPost;
 import com.fuyuki.backend.model.entity.UmsUser;
 import com.fuyuki.backend.model.vo.PostVO;
@@ -27,7 +28,7 @@ public class BmsPostController extends BaseController {
     @Resource
     private IBmsPostService iBmsPostService;
     @Resource
-    private IUmsUserService umsUserService;
+    private IUmsUserService iUmsUserService;
 
     @GetMapping("/list")
     public ApiResult<Page<PostVO>> list(@RequestParam(value = "tab", defaultValue = "latest") String tab,
@@ -37,13 +38,13 @@ public class BmsPostController extends BaseController {
         return ApiResult.success(list);
     }
 
-//    @RequestMapping(value = "/create", method = RequestMethod.POST)
-//    public ApiResult<BmsPost> create(@RequestHeader(value = USER_NAME) String userName
-//            , @RequestBody CreateTopicDTO dto) {
-//        UmsUser user = umsUserService.getUserByUsername(userName);
-//        BmsPost topic = iBmsPostService.create(dto, user);
-//        return ApiResult.success(topic);
-//    }
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public ApiResult<BmsPost> create(@RequestHeader(value = USER_NAME) String userName
+            , @RequestBody CreateTopicDTO dto) {
+        UmsUser user = iUmsUserService.getUserByUsername(userName);
+        BmsPost topic = iBmsPostService.create(dto, user);
+        return ApiResult.success(topic);
+    }
 //    @GetMapping()
 //    public ApiResult<Map<String, Object>> view(@RequestParam("id") String id) {
 //        Map<String, Object> map = iBmsPostService.viewTopic(id);

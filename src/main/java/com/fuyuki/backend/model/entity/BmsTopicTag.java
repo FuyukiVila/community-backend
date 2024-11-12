@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 
@@ -14,6 +15,7 @@ import java.io.Serializable;
 @TableName("bms_post_tag")
 @Accessors(chain = true)
 public class BmsTopicTag implements Serializable {
+    @Serial
     private static final long serialVersionUID = -5028599844989220715L;
 
     @TableId(type = IdType.AUTO)

@@ -11,7 +11,7 @@ import java.util.*;
 
 public class JwtUtil {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
-    public static final long EXPIRATION_TIME = 3600_000_000L; // 1000 hour
+    public static final long EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000; // 7 day
     public static final String SECRET = "ThisIsASecret";//please change to your own encryption secret.
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER_STRING = "Authorization";

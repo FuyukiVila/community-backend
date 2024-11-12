@@ -24,6 +24,6 @@ public class BmsBillboardController extends BaseController {
     public ApiResult<BmsBillboard> getNotices(){
         List<BmsBillboard> list = bmsBillboardService.list(new
                 LambdaQueryWrapper<BmsBillboard>().eq(BmsBillboard::isShow,true));
-        return ApiResult.success(list.get(list.size()- 1));
+        return ApiResult.success(list.getLast());
     }
 }
