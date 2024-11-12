@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.fuyuki.backend.model.dto.LoginDTO;
 import com.fuyuki.backend.model.dto.RegisterDTO;
 import com.fuyuki.backend.model.entity.UmsUser;
+import com.fuyuki.backend.model.vo.ProfileVO;
 
 
 public interface IUmsUserService extends IService<UmsUser> {
@@ -35,5 +36,5 @@ public interface IUmsUserService extends IService<UmsUser> {
      * @param id 用户ID
      * @return
      */
-//    ProfileVO getUserProfile(String id);
+    ProfileVO getUserProfile(String id);
 }

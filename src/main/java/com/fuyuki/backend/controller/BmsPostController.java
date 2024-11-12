@@ -8,14 +8,9 @@ import com.fuyuki.backend.model.entity.UmsUser;
 import com.fuyuki.backend.model.vo.PostVO;
 import com.fuyuki.backend.service.IBmsPostService;
 import com.fuyuki.backend.service.IUmsUserService;
-import com.vdurmont.emoji.EmojiParser;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
-import javax.annotation.Resource;
-import javax.validation.Valid;
 
-import java.util.Date;
-import java.util.List;
+import javax.annotation.Resource;
 import java.util.Map;
 
 import static com.fuyuki.backend.jwt.JwtUtil.USER_NAME;
@@ -45,11 +40,12 @@ public class BmsPostController extends BaseController {
         BmsPost topic = iBmsPostService.create(dto, user);
         return ApiResult.success(topic);
     }
-//    @GetMapping()
-//    public ApiResult<Map<String, Object>> view(@RequestParam("id") String id) {
-//        Map<String, Object> map = iBmsPostService.viewTopic(id);
-//        return ApiResult.success(map);
-//    }
+
+    @GetMapping()
+    public ApiResult<Map<String, Object>> view(@RequestParam("id") String id) {
+        Map<String, Object> map = iBmsPostService.viewTopic(id);
+        return ApiResult.success(map);
+    }
 
 //    @GetMapping("/recommend")
 //    public ApiResult<List<BmsPost>> getRecommend(@RequestParam("topicId") String id) {

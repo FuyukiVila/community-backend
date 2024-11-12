@@ -29,6 +29,9 @@ public class UmsUser implements Serializable {
     @TableField("username")
     private String username;
 
+    @TableField("isAdmin")
+    private Boolean isAdmin;
+
     @TableField("alias")
     private String alias;
 
