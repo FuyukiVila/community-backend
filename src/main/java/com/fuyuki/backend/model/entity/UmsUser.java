@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -20,7 +19,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Accessors(chain = true)
 public class UmsUser implements Serializable {
-    @Serial
+
     private static final long serialVersionUID = -5051120337175047163L;
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)

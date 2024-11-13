@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 
@@ -17,7 +16,7 @@ import java.io.Serializable;
 @TableName("bms_tag")
 @Accessors(chain = true)
 public class BmsTag implements Serializable {
-    @Serial
+
     private static final long serialVersionUID = 3257790983905872243L;
 
     @TableId(type = IdType.ASSIGN_ID)

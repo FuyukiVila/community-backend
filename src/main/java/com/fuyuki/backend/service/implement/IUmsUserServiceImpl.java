@@ -4,15 +4,20 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fuyuki.backend.common.exception.ApiAsserts;
 import com.fuyuki.backend.jwt.JwtUtil;
+import com.fuyuki.backend.mapper.BmsFollowMapper;
+import com.fuyuki.backend.mapper.BmsTopicMapper;
 import com.fuyuki.backend.mapper.UmsUserMapper;
 import com.fuyuki.backend.model.dto.LoginDTO;
 import com.fuyuki.backend.model.dto.RegisterDTO;
+import com.fuyuki.backend.model.entity.BmsFollow;
+import com.fuyuki.backend.model.entity.BmsPost;
 import com.fuyuki.backend.model.entity.UmsUser;
 import com.fuyuki.backend.model.vo.ProfileVO;
 import com.fuyuki.backend.service.IUmsUserService;
 import com.fuyuki.backend.utils.MD5Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -26,10 +31,10 @@ import java.util.Date;
 @Transactional(rollbackFor = Exception.class)
 public class IUmsUserServiceImpl extends ServiceImpl<UmsUserMapper, UmsUser> implements IUmsUserService {
 
-//    @Autowired
-//    private BmsTopicMapper bmsTopicMapper;
-//    @Autowired
-//    private BmsFollowMapper bmsFollowMapper;
+    @Autowired
+    private BmsTopicMapper bmsTopicMapper;
+    @Autowired
+    private BmsFollowMapper bmsFollowMapper;
 
     @Override
     public UmsUser executeRegister(RegisterDTO dto) {
@@ -78,13 +83,13 @@ public class IUmsUserServiceImpl extends ServiceImpl<UmsUserMapper, UmsUser> imp
         ProfileVO profile = new ProfileVO();
         UmsUser user = baseMapper.selectById(id);
         BeanUtils.copyProperties(user, profile);
-//        // 用户文章数
-//        int count = bmsTopicMapper.selectCount(new LambdaQueryWrapper<BmsPost>().eq(BmsPost::getUserId, id));
-//        profile.setTopicCount(count);
-//
-//        // 粉丝数
-//        int followers = bmsFollowMapper.selectCount((new LambdaQueryWrapper<BmsFollow>().eq(BmsFollow::getParentId, id)));
-//        profile.setFollowerCount(followers);
+        // 用户文章数
+        int count = Math.toIntExact(bmsTopicMapper.selectCount(new LambdaQueryWrapper<BmsPost>().eq(BmsPost::getUserId, id)));
+        profile.setTopicCount(count);
+
+        // 粉丝数
+        int followers = Math.toIntExact(bmsFollowMapper.selectCount((new LambdaQueryWrapper<BmsFollow>().eq(BmsFollow::getParentId, id))));
+        profile.setFollowerCount(followers);
 
         return profile;
     }

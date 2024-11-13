@@ -1,12 +1,18 @@
 package com.fuyuki.backend.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Assert;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fuyuki.backend.common.api.ApiResult;
 import com.fuyuki.backend.model.dto.LoginDTO;
 import com.fuyuki.backend.model.dto.RegisterDTO;
+import com.fuyuki.backend.model.entity.BmsPost;
 import com.fuyuki.backend.model.entity.UmsUser;
+import com.fuyuki.backend.service.IBmsPostService;
 import com.fuyuki.backend.service.IUmsUserService;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -20,11 +26,12 @@ import static com.fuyuki.backend.jwt.JwtUtil.USER_NAME;
 public class UmsUserController extends BaseController {
     @Resource
     private IUmsUserService iUmsUserService;
-//    @Resource
-//    private IBmsPostService iBmsPostService;
+    @Resource
+    private IBmsPostService iBmsPostService;
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ApiResult<Map<String, Object>> register(@Valid @RequestBody RegisterDTO dto) {
+        dto.setName(dto.getName().trim().toLowerCase());
         UmsUser user = iUmsUserService.executeRegister(dto);
         if (ObjectUtils.isEmpty(user)) {
             return ApiResult.failed("账号注册失败");
@@ -36,6 +43,7 @@ public class UmsUserController extends BaseController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ApiResult<Map<String, String>> login(@Valid @RequestBody LoginDTO dto) {
+        dto.setUsername(dto.getUsername().trim().toLowerCase());
         String token = iUmsUserService.executeLogin(dto);
         if (ObjectUtils.isEmpty(token)) {
             return ApiResult.failed("账号密码错误");
@@ -56,19 +64,19 @@ public class UmsUserController extends BaseController {
         return ApiResult.success(null, "注销成功");
     }
 
-//    @GetMapping("/{username}")
-//    public ApiResult<Map<String, Object>> getUserByName(@PathVariable("username") String username,
-//                                                        @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo,
-//                                                        @RequestParam(value = "size", defaultValue = "10") Integer size) {
-//        Map<String, Object> map = new HashMap<>(16);
-//        UmsUser user = iUmsUserService.getUserByUsername(username);
-//        Assert.notNull(user, "用户不存在");
-//        Page<BmsPost> page = iBmsPostService.page(new Page<>(pageNo, size),
-//                new LambdaQueryWrapper<BmsPost>().eq(BmsPost::getUserId, user.getId()));
-//        map.put("user", user);
-//        map.put("topics", page);
-//        return ApiResult.success(map);
-//    }
+    @GetMapping("/{username}")
+    public ApiResult<Map<String, Object>> getUserByName(@PathVariable("username") String username,
+                                                        @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo,
+                                                        @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        Map<String, Object> map = new HashMap<>(16);
+        UmsUser user = iUmsUserService.getUserByUsername(username);
+        Assert.notNull(user, "用户不存在");
+        Page<BmsPost> page = iBmsPostService.page(new Page<>(pageNo, size),
+                new LambdaQueryWrapper<BmsPost>().eq(BmsPost::getUserId, user.getId()));
+        map.put("user", user);
+        map.put("topics", page);
+        return ApiResult.success(map);
+    }
     @PostMapping("/update")
     public ApiResult<UmsUser> updateUser(@RequestBody UmsUser umsUser) {
         iUmsUserService.updateById(umsUser);

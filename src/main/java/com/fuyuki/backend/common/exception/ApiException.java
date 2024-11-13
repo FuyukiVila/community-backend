@@ -1,8 +1,10 @@
 package com.fuyuki.backend.common.exception;
 
 import com.fuyuki.backend.common.api.IErrorCode;
+import lombok.Getter;
 
 
+@Getter
 public class ApiException extends RuntimeException {
     private IErrorCode errorCode;
 
@@ -15,7 +17,4 @@ public class ApiException extends RuntimeException {
         super(message);
     }
 
-    public IErrorCode getErrorCode() {
-        return errorCode;
-    }
 }

@@ -1,11 +1,9 @@
 package com.fuyuki.backend.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-
 import com.fuyuki.backend.common.api.ApiResult;
 import com.fuyuki.backend.model.entity.BmsBillboard;
 import com.fuyuki.backend.service.IBmsBillboardService;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +22,6 @@ public class BmsBillboardController extends BaseController {
     public ApiResult<BmsBillboard> getNotices(){
         List<BmsBillboard> list = bmsBillboardService.list(new
                 LambdaQueryWrapper<BmsBillboard>().eq(BmsBillboard::isShow,true));
-        return ApiResult.success(list.getLast());
+        return ApiResult.success(list.get(list.size() - 1));
     }
 }
