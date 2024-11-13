@@ -114,10 +114,10 @@ public class IBmsPostServiceImpl extends ServiceImpl<BmsTopicMapper, BmsPost> im
         return map;
     }
 
-//    @Override
-//    public List<BmsPost> getRecommend(String id) {
-//        return this.baseMapper.selectRecommend(id);
-//    }
+    @Override
+    public List<BmsPost> getRecommend(String id) {
+        return this.baseMapper.selectRecommend(id);
+    }
 //    @Override
 //    public Page<PostVO> searchByKey(String keyword, Page<PostVO> page) {
 //        // 查询话题
@@ -126,7 +126,7 @@ public class IBmsPostServiceImpl extends ServiceImpl<BmsTopicMapper, BmsPost> im
 //        setTopicTags(iPage);
 //        return iPage;
 //    }
-//
+
     private void setTopicTags(Page<PostVO> iPage) {
         iPage.getRecords().forEach(topic -> {
             List<BmsTopicTag> topicTags = IBmsTopicTagService.selectByTopicId(topic.getId());

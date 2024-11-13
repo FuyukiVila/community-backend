@@ -7,6 +7,7 @@ import com.fuyuki.backend.model.entity.BmsPost;
 import com.fuyuki.backend.model.entity.UmsUser;
 import com.fuyuki.backend.model.vo.PostVO;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -42,7 +43,7 @@ public interface IBmsPostService extends IService<BmsPost> {
      * @param id
      * @return
      */
-//    List<BmsPost> getRecommend(String id);
+    List<BmsPost> getRecommend(String id);
     /**
      * 关键字检索
      *

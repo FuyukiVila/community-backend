@@ -11,6 +11,7 @@ import com.fuyuki.backend.service.IUmsUserService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 import static com.fuyuki.backend.jwt.JwtUtil.USER_NAME;
@@ -47,11 +48,11 @@ public class BmsPostController extends BaseController {
         return ApiResult.success(map);
     }
 
-//    @GetMapping("/recommend")
-//    public ApiResult<List<BmsPost>> getRecommend(@RequestParam("topicId") String id) {
-//        List<BmsPost> topics = iBmsPostService.getRecommend(id);
-//        return ApiResult.success(topics);
-//    }
+    @GetMapping("/recommend")
+    public ApiResult<List<BmsPost>> getRecommend(@RequestParam("topicId") String id) {
+        List<BmsPost> topics = iBmsPostService.getRecommend(id);
+        return ApiResult.success(topics);
+    }
 //
 //    @PostMapping("/update")
 //    public ApiResult<BmsPost> update(@RequestHeader(value = USER_NAME) String userName, @Valid @RequestBody BmsPost post) {
