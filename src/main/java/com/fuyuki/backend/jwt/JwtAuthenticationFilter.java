@@ -18,14 +18,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final List<String> protectedPaths = Arrays.asList(
             "/ums/user/info",
             "/ums/user/update",
-            "/post/create",
-            "/post/update",
+            "/post/create", "/post/update",
             "/post/delete/*",
             "/comment/add_comment",
             "/comment/delete_comment/*",
             "/relationship/subscribe/*",
             "/relationship/unsubscribe/*",
-            "/relationship/validate/*"
+            "/relationship/validate/*",
+            "/ums/user/ban/*",
+            "/ums/user/unban/*"
     );
 
     @Override
@@ -34,8 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             if (isProtectedUrl(request)) {
 //                System.out.println(request.getMethod());
-                if (!request.getMethod().equals("OPTIONS"))
-                    request = JwtUtil.validateTokenAndAddUserIdToHeader(request);
+                if (!request.getMethod().equals("OPTIONS")) request = JwtUtil.validateTokenAndAddUserIdToHeader(request);
             }
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());

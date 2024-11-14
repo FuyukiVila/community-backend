@@ -82,11 +82,36 @@ public class UmsUserController extends BaseController {
     public ApiResult<UmsUser> updateUser(@Valid @RequestBody UmsUser umsUser) {
         UmsUser user = umsUserService.getUserByUsername(umsUser.getUsername());
         Assert.notNull(user, "用户不存在");
+        Assert.isTrue(user.getStatus(), "用户已被封禁，请联系管理员");
         user.setBio(umsUser.getBio());
         user.setAlias(umsUser.getAlias());
         user.setMobile(umsUser.getMobile());
         user.setEmail(umsUser.getEmail());
         umsUserService.updateById(user);
+        return ApiResult.success(umsUser);
+    }
+
+    @GetMapping("/ban/{id}")
+    public ApiResult<UmsUser> banUser(@RequestHeader(value = USER_NAME) String userName, @PathVariable("id") String id) {
+        UmsUser user = umsUserService.getUserByUsername(userName);
+        Assert.isTrue(user.getIsAdmin(), "没有权限");
+        UmsUser umsUser = umsUserService.getUserByUsername(id);
+        Assert.notNull(umsUser, "用户不存在");
+        Assert.isTrue(umsUser.getStatus(), "用户已封禁");
+        umsUser.setStatus(false);
+        umsUserService.updateById(umsUser);
+        return ApiResult.success(umsUser);
+    }
+
+    @GetMapping("/unban/{id}")
+    public ApiResult<UmsUser> unbanUser(@RequestHeader(value = USER_NAME) String userName, @PathVariable("id") String id) {
+        UmsUser user = umsUserService.getUserByUsername(userName);
+        Assert.isTrue(user.getIsAdmin(), "没有权限");
+        UmsUser umsUser = umsUserService.getUserByUsername(id);
+        Assert.notNull(umsUser, "用户不存在");
+        Assert.isTrue(!umsUser.getStatus(), "用户已解封");
+        umsUser.setStatus(true);
+        umsUserService.updateById(umsUser);
         return ApiResult.success(umsUser);
     }
 }

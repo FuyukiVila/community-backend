@@ -42,6 +42,7 @@ public class BmsPostController extends BaseController {
     public ApiResult<BmsPost> create(@RequestHeader(value = USER_NAME) String userName
             , @RequestBody CreateTopicDTO dto) {
         UmsUser user = umsUserService.getUserByUsername(userName);
+        Assert.isTrue(user.getStatus(), "用户已被封禁，请联系管理员");
         BmsPost topic = bmsPostService.create(dto, user);
         return ApiResult.success(topic);
     }
@@ -62,6 +63,7 @@ public class BmsPostController extends BaseController {
     public ApiResult<BmsPost> update(@RequestHeader(value = USER_NAME) String userName, @Valid @RequestBody BmsPost post) {
         UmsUser umsUser = umsUserService.getUserByUsername(userName);
         Assert.isTrue(umsUser.getId().equals(post.getUserId()), "非本人无权修改");
+        Assert.isTrue(umsUser.getStatus(), "用户已被封禁，请联系管理员");
         post.setModifyTime(new Date());
         post.setContent(EmojiParser.parseToAliases(post.getContent()));
         bmsPostService.updateById(post);
@@ -74,6 +76,7 @@ public class BmsPostController extends BaseController {
         BmsPost byId = bmsPostService.getById(id);
         Assert.notNull(byId, "来晚一步，话题已不存在");
         Assert.isTrue(byId.getUserId().equals(umsUser.getId()) || umsUser.getIsAdmin(), "你为什么可以删除别人的话题？？？");
+        Assert.isTrue(umsUser.getStatus(), "用户已被封禁，请联系管理员");
         bmsPostService.removeById(id);
         return ApiResult.success(null, "删除成功");
     }

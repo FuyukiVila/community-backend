@@ -36,9 +36,7 @@ public class BmsRelationshipController extends BaseController {
                 new LambdaQueryWrapper<BmsFollow>()
                         .eq(BmsFollow::getParentId, parentId)
                         .eq(BmsFollow::getFollowerId, umsUser.getId()));
-
         Assert.isNull(one, "已关注");
-
         BmsFollow follow = new BmsFollow();
         follow.setParentId(parentId);
         follow.setFollowerId(umsUser.getId());
