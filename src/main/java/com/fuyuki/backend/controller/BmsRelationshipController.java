@@ -2,11 +2,11 @@ package com.fuyuki.backend.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fuyuki.backend.common.api.ApiResult;
-import com.fuyuki.backend.common.exception.ApiAsserts;
 import com.fuyuki.backend.model.entity.BmsFollow;
 import com.fuyuki.backend.model.entity.UmsUser;
 import com.fuyuki.backend.service.IBmsFollowService;
 import com.fuyuki.backend.service.IUmsUserService;
+import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,16 +31,13 @@ public class BmsRelationshipController extends BaseController {
     public ApiResult<Object> handleFollow(@RequestHeader(value = USER_NAME) String userName
             , @PathVariable("userId") String parentId) {
         UmsUser umsUser = umsUserService.getUserByUsername(userName);
-        if (parentId.equals(umsUser.getId())) {
-            ApiAsserts.fail("您脸皮太厚了，怎么可以关注自己呢 😮");
-        }
+        Assert.isTrue(!parentId.equals(umsUser.getId()), "您脸皮太厚了，怎么可以关注自己呢 😮");
         BmsFollow one = bmsFollowService.getOne(
                 new LambdaQueryWrapper<BmsFollow>()
                         .eq(BmsFollow::getParentId, parentId)
                         .eq(BmsFollow::getFollowerId, umsUser.getId()));
-        if (!ObjectUtils.isEmpty(one)) {
-            ApiAsserts.fail("已关注");
-        }
+
+        Assert.isNull(one, "已关注");
 
         BmsFollow follow = new BmsFollow();
         follow.setParentId(parentId);
@@ -57,9 +54,7 @@ public class BmsRelationshipController extends BaseController {
                 new LambdaQueryWrapper<BmsFollow>()
                         .eq(BmsFollow::getParentId, parentId)
                         .eq(BmsFollow::getFollowerId, umsUser.getId()));
-        if (ObjectUtils.isEmpty(one)) {
-            ApiAsserts.fail("未关注！");
-        }
+        Assert.notNull(one, "未关注");
         bmsFollowService.remove(new LambdaQueryWrapper<BmsFollow>().eq(BmsFollow::getParentId, parentId)
                 .eq(BmsFollow::getFollowerId, umsUser.getId()));
         return ApiResult.success(null, "取关成功");

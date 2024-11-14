@@ -2,7 +2,6 @@ package com.fuyuki.backend.service.implement;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.fuyuki.backend.common.exception.ApiAsserts;
 import com.fuyuki.backend.jwt.JwtUtil;
 import com.fuyuki.backend.mapper.BmsFollowMapper;
 import com.fuyuki.backend.mapper.BmsTopicMapper;
@@ -20,7 +19,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
+import org.springframework.util.Assert;
 
 import java.util.Date;
 
@@ -42,9 +41,7 @@ public class IUmsUserServiceImpl extends ServiceImpl<UmsUserMapper, UmsUser> imp
         LambdaQueryWrapper<UmsUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(UmsUser::getUsername, dto.getName()).or().eq(UmsUser::getEmail, dto.getEmail());
         UmsUser umsUser = baseMapper.selectOne(wrapper);
-        if (!ObjectUtils.isEmpty(umsUser)) {
-            ApiAsserts.fail("账号或邮箱已存在！");
-        }
+        Assert.isNull(umsUser, "账号或邮箱已存在！");
         UmsUser addUser = UmsUser.builder()
                 .username(dto.getName())
                 .alias(dto.getName())
