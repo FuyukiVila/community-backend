@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -26,12 +28,16 @@ public class UmsUser implements Serializable {
     private String id;
 
     @TableField("username")
+    @NotEmpty
+    @Size(min = 2, max = 15)
     private String username;
 
     @TableField("isAdmin")
     private Boolean isAdmin;
 
     @TableField("alias")
+    @NotEmpty(message = "昵称不能为空")
+    @Size(min = 2, max = 15, message = "昵称长度在2-15字")
     private String alias;
 
     @JsonIgnore()
@@ -40,7 +46,7 @@ public class UmsUser implements Serializable {
 
     @Builder.Default
     @TableField("avatar")
-    private String avatar="";
+    private String avatar = "";
 
     @TableField("email")
     private String email;
@@ -50,7 +56,8 @@ public class UmsUser implements Serializable {
 
     @Builder.Default
     @TableField("bio")
-    private String bio = "自由职业者";
+    @Size(max = 100, message = "简介长度不超过100字")
+    private String bio = "随便写点什么吧";
 
     @Builder.Default
     @TableField("score")

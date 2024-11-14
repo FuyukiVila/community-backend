@@ -44,9 +44,15 @@ public class BmsCommentController extends BaseController {
     }
 
     @DeleteMapping("/delete_comment/{id}")
-    public ApiResult<String> delete_comment(@PathVariable(value = "id") String id) {
+    public ApiResult<String> delete_comment(@RequestHeader(value = USER_NAME) String userName, @PathVariable(value = "id") String id) {
         // 如果不存在评论
         Assert.notNull(bmsCommentService.getById(id), "评论不存在");
+
+        // 删除者是本人或管理员
+        UmsUser user = umsUserService.getUserByUsername(userName);
+        Assert.notNull(user, "找不到用户");
+        Assert.isTrue(user.getId().equals(bmsCommentService.getById(id).getUserId()) || user.getIsAdmin(), "无权限删除");
+
         bmsCommentService.removeById(id);
         return ApiResult.success("删除成功");
     }

@@ -51,5 +51,5 @@ public interface IBmsPostService extends IService<BmsPost> {
      * @param page
      * @return
      */
-//    Page<PostVO> searchByKey(String keyword, Page<PostVO> page);
+    Page<PostVO> searchByKey(String keyword, Page<PostVO> page);
 }

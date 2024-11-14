@@ -7,6 +7,7 @@ import com.fuyuki.backend.model.dto.LoginDTO;
 import com.fuyuki.backend.model.dto.RegisterDTO;
 import com.fuyuki.backend.model.entity.BmsPost;
 import com.fuyuki.backend.model.entity.UmsUser;
+import com.fuyuki.backend.model.vo.ProfileVO;
 import com.fuyuki.backend.service.IBmsPostService;
 import com.fuyuki.backend.service.IUmsUserService;
 import org.springframework.util.Assert;
@@ -65,21 +66,27 @@ public class UmsUserController extends BaseController {
     }
 
     @GetMapping("/{username}")
-    public ApiResult<Map<String, Object>> getUserByName(@PathVariable("username") String username,
-                                                        @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo,
-                                                        @RequestParam(value = "size", defaultValue = "10") Integer size) {
+    public ApiResult<Map<String, Object>> getUserByName(@PathVariable("username") String username, @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo, @RequestParam(value = "size", defaultValue = "10") Integer size) {
         Map<String, Object> map = new HashMap<>(16);
         UmsUser user = umsUserService.getUserByUsername(username);
         Assert.notNull(user, "用户不存在");
-        Page<BmsPost> page = bmsPostService.page(new Page<>(pageNo, size),
-                new LambdaQueryWrapper<BmsPost>().eq(BmsPost::getUserId, user.getId()));
+        Page<BmsPost> page = bmsPostService.page(new Page<>(pageNo, size), new LambdaQueryWrapper<BmsPost>().eq(BmsPost::getUserId, user.getId()));
+        ProfileVO profileVO = umsUserService.getUserProfile(user.getId());
         map.put("user", user);
         map.put("topics", page);
+        map.put("profile", profileVO);
         return ApiResult.success(map);
     }
+
     @PostMapping("/update")
-    public ApiResult<UmsUser> updateUser(@RequestBody UmsUser umsUser) {
-        umsUserService.updateById(umsUser);
+    public ApiResult<UmsUser> updateUser(@Valid @RequestBody UmsUser umsUser) {
+        UmsUser user = umsUserService.getUserByUsername(umsUser.getUsername());
+        Assert.notNull(user, "用户不存在");
+        user.setBio(umsUser.getBio());
+        user.setAlias(umsUser.getAlias());
+        user.setMobile(umsUser.getMobile());
+        user.setEmail(umsUser.getEmail());
+        umsUserService.updateById(user);
         return ApiResult.success(umsUser);
     }
 }

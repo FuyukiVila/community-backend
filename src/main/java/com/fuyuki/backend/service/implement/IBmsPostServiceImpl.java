@@ -46,6 +46,7 @@ public class IBmsPostServiceImpl extends ServiceImpl<BmsTopicMapper, BmsPost> im
 
     @Autowired
     private IBmsTopicTagService IBmsTopicTagService;
+
     @Override
     public Page<PostVO> getList(Page<PostVO> page, String tab) {
         // 查询话题
@@ -118,14 +119,15 @@ public class IBmsPostServiceImpl extends ServiceImpl<BmsTopicMapper, BmsPost> im
     public List<BmsPost> getRecommend(String id) {
         return this.baseMapper.selectRecommend(id);
     }
-//    @Override
-//    public Page<PostVO> searchByKey(String keyword, Page<PostVO> page) {
-//        // 查询话题
-//        Page<PostVO> iPage = this.baseMapper.searchByKey(page, keyword);
-//        // 查询话题的标签
-//        setTopicTags(iPage);
-//        return iPage;
-//    }
+
+    @Override
+    public Page<PostVO> searchByKey(String keyword, Page<PostVO> page) {
+        // 查询话题
+        Page<PostVO> iPage = this.baseMapper.searchByKey(page, keyword);
+        // 查询话题的标签
+        setTopicTags(iPage);
+        return iPage;
+    }
 
     private void setTopicTags(Page<PostVO> iPage) {
         iPage.getRecords().forEach(topic -> {
