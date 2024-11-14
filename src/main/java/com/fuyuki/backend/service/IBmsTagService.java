@@ -1,6 +1,8 @@
 package com.fuyuki.backend.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.fuyuki.backend.model.entity.BmsPost;
 import com.fuyuki.backend.model.entity.BmsTag;
 
 import java.util.List;
@@ -21,5 +23,5 @@ public interface IBmsTagService extends IService<BmsTag> {
      * @param id
      * @return
      */
-//    Page<BmsPost> selectTopicsByTagId(Page<BmsPost> topicPage, String id);
+    Page<BmsPost> selectTopicsByTagId(Page<BmsPost> topicPage, String id);
 }
