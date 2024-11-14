@@ -1,14 +1,20 @@
-# 技术栈
+# backend
+
+## 技术栈
 
 - springboot2
 - mybatis-plus
 - 8 <= jdk <= 21
 - mariaDB
 
-# build
+## build
 
-- mvn clean package
+```
+mvn clean package
+```
 
-# serve
+## serve
 
-- java -jar target/xxxx.jar
+```
+java -jar target/xxxx.jar
+```
