@@ -45,6 +45,22 @@ public class IBmsTagServiceImpl extends ServiceImpl<BmsTagMapper, BmsTag> implem
     }
 
     @Override
+    public void removeTags(List<String> tagIds) {
+        for (String tagId : tagIds) {
+            BmsTag tag = this.baseMapper.selectById(tagId);
+            if (tag == null) {
+                continue;
+            }
+            tag.setTopicCount(tag.getTopicCount() - 1);
+            if (tag.getTopicCount() <= 0) {
+                this.baseMapper.deleteById(tag);
+            } else {
+                this.baseMapper.updateById(tag);
+            }
+        }
+    }
+
+    @Override
     public Page<BmsPost> selectTopicsByTagId(Page<BmsPost> topicPage, String id) {
 
         // 获取关联的话题ID

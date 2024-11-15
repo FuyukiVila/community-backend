@@ -16,6 +16,15 @@ public interface IBmsTagService extends IService<BmsTag> {
      * @return
      */
     List<BmsTag> insertTags(List<String> tags);
+
+    /**
+     * 删除标签
+     *
+     * @param tagIds
+     * @return
+     */
+    void removeTags(List<String> tagIds);
+
     /**
      * 获取标签关联话题
      *

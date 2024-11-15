@@ -19,26 +19,36 @@
 
     <select id="selectListAndPage" resultMap="topicVO">
         SELECT
-        t.id,t.title,t.user_id,t.comments,
-        t.view,t.collects,t.top,t.essence,
-        t.create_time ,t.modify_time ,
-        u.username,u.alias, u.avatar
+        t.id,
+        t.title,
+        t.user_id,
+        t.comments,
+        t.view,
+        t.collects,
+        t.top,
+        t.essence,
+        t.create_time,
+        t.modify_time,
+        u.username,
+        u.alias,
+        u.avatar
         FROM bms_post t
-        LEFT JOIN ums_user u
-        ON t.user_id = u.id
+        LEFT JOIN ums_user u ON t.user_id = u.id
         <where>
             <if test="tab == 'hot'">
-                date(t.create_time) &lt;= date_add(curdate(), interval 1 day)
-                and date(t.create_time) &gt;= date_sub(curdate(), interval 7 day)
+                t.create_time BETWEEN date_sub(curdate(), interval 7 day) AND date_add(curdate(), interval 1 day)
             </if>
         </where>
-        <if test="tab != 'hot'">
-            order by t.create_time desc
-        </if>
-        <if test="tab == 'hot'">
-            order by t.view desc, t.create_time desc
-        </if>
+        <choose>
+            <when test="tab == 'hot'">
+                ORDER BY t.view DESC, t.create_time DESC
+            </when>
+            <otherwise>
+                ORDER BY t.create_time DESC
+            </otherwise>
+        </choose>
     </select>
+
 
     <select id="selectRecommend" resultType="com.fuyuki.backend.model.entity.BmsPost">
         select *
@@ -63,16 +73,13 @@
         u.alias,
         u.avatar
         FROM bms_post t
-        LEFT JOIN ums_user u
-        ON t.user_id = u.id
+        LEFT JOIN ums_user u ON t.user_id = u.id
         <where>
-            <if test="keyword!=null">
-                and t.title like CONCAT('%','${keyword}')
-                or t.title like CONCAT('${keyword}','%')
-                or t.title like CONCAT('%','${keyword}','%')
-                or t.title = #{keyword}
+            <if test="keyword != null">
+                AND (t.title LIKE CONCAT('%', #{keyword}, '%'))
             </if>
         </where>
-        order by t.view desc, t.create_time desc
+        ORDER BY t.view DESC, t.create_time DESC
     </select>
+
 </mapper>

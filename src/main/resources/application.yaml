@@ -14,6 +14,10 @@ spring:
       minimum-idle: 25 # 最小空闲连接数，默认为maximum-pool-size的一半
       max-lifetime: 1800000 # 连接的最大存活时间，单位为毫秒，默认1800秒（30分钟）
       idle-timeout: 600000 # 连接的空闲超时时间，单位为毫秒，默认10分钟
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
 
 logging:
   level:

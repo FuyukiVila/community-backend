@@ -1,56 +1,79 @@
 package com.fuyuki.backend.utils;
 
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-
+/**
+ * <br>类 名: MD5Utils
+ * <br>描 述: 加密工具类
+ * <br>作 者: shizhenwei
+ * <br>创 建: 2017年5月15日
+ * <br>版 本: v0.0.2
+ * <br>
+ * <br>历 史: (版本) 作者 时间 注释
+ */
 public class MD5Utils {
 
-    public static String getPwd(String pwd) {
-        try {
-            // 创建加密对象
-            MessageDigest digest = MessageDigest.getInstance("md5");
+    private static final Logger logger = LoggerFactory.getLogger(MD5Utils.class);
 
-            // 调用加密对象的方法，加密的动作已经完成
-            byte[] bs = digest.digest(pwd.getBytes());
-            // 接下来，我们要对加密后的结果，进行优化，按照mysql的优化思路走
-            // mysql的优化思路：
-            // 第一步，将数据全部转换成正数：
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : bs) {
-                // 第一步，将数据全部转换成正数：
-                // 解释：为什么采用b&255
-                /*
-                 * b:它本来是一个byte类型的数据(1个字节) 255：是一个int类型的数据(4个字节)
-                 * byte类型的数据与int类型的数据进行运算，会自动类型提升为int类型 eg: b: 1001 1100(原始数据)
-                 * 运算时： b: 0000 0000 0000 0000 0000 0000 1001 1100 255: 0000
-                 * 0000 0000 0000 0000 0000 1111 1111 结果：0000 0000 0000 0000
-                 * 0000 0000 1001 1100 此时的temp是一个int类型的整数
-                 */
-                int temp = b & 255;
-                // 第二步，将所有的数据转换成16进制的形式
-                // 注意：转换的时候注意if正数>=0&&<16，那么如果使用Integer.toHexString()，可能会造成缺少位数
-                // 因此，需要对temp进行判断
-                if (temp < 16 && temp >= 0) {
-                    // 手动补上一个“0”
-                    hexString.append("0").append(Integer.toHexString(temp));
-                } else {
-                    hexString.append(Integer.toHexString(temp));
-                }
-            }
-            return hexString.toString();
+    private static MessageDigest messagedigest = null;
+
+    static {
+        try {
+            messagedigest = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("MD5 messagedigest初始化失败", e);
         }
-        return "";
     }
 
+    /**
+     * 对一个文件获取md5值
+     *
+     * @return md5串
+     */
+    public static String getFileMD5String(File file) {
 
-//    public static void main(String[] args) {
-//        String pwd = MD5Utils.getPwd("234");
-//        System.out.println(pwd);
-//    }
+        try (FileInputStream fileInputStream = new FileInputStream(file);) {
+            return getStreamMD5String(fileInputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
+    public static String getStreamMD5String(InputStream input) {
+        try {
+            byte[] buffer = new byte[8192];
+            int length;
+            while ((length = input.read(buffer)) != -1) {
+                messagedigest.update(buffer, 0, length);
+            }
+            return new String(Hex.encodeHex(messagedigest.digest()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String getMD5String(String s) {
+        return DigestUtils.md5Hex(s);
+    }
+
+    public static String getMD5String(byte[] bytes) {
+        return DigestUtils.md5Hex(bytes);
+    }
+
+    public static boolean checkPassword(String password, String md5PwdStr) {
+        String s = getMD5String(password);
+        return s.equals(md5PwdStr);
+    }
 }

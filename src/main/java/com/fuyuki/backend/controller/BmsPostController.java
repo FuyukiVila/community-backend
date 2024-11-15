@@ -1,12 +1,16 @@
 package com.fuyuki.backend.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fuyuki.backend.common.api.ApiResult;
 import com.fuyuki.backend.model.dto.CreateTopicDTO;
 import com.fuyuki.backend.model.entity.BmsPost;
+import com.fuyuki.backend.model.entity.BmsTopicTag;
 import com.fuyuki.backend.model.entity.UmsUser;
 import com.fuyuki.backend.model.vo.PostVO;
 import com.fuyuki.backend.service.IBmsPostService;
+import com.fuyuki.backend.service.IBmsTagService;
+import com.fuyuki.backend.service.IBmsTopicTagService;
 import com.fuyuki.backend.service.IUmsUserService;
 import com.vdurmont.emoji.EmojiParser;
 import org.springframework.util.Assert;
@@ -29,18 +33,19 @@ public class BmsPostController extends BaseController {
     private IBmsPostService bmsPostService;
     @Resource
     private IUmsUserService umsUserService;
+    @Resource
+    private IBmsTopicTagService bmsTopicTagService;
+    @Resource
+    private IBmsTagService bmsTagService;
 
     @GetMapping("/list")
-    public ApiResult<Page<PostVO>> list(@RequestParam(value = "tab", defaultValue = "latest") String tab,
-                                        @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo,
-                                        @RequestParam(value = "size", defaultValue = "10") Integer pageSize) {
+    public ApiResult<Page<PostVO>> list(@RequestParam(value = "tab", defaultValue = "latest") String tab, @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo, @RequestParam(value = "size", defaultValue = "10") Integer pageSize) {
         Page<PostVO> list = bmsPostService.getList(new Page<>(pageNo, pageSize), tab);
         return ApiResult.success(list);
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ApiResult<BmsPost> create(@RequestHeader(value = USER_NAME) String userName
-            , @RequestBody CreateTopicDTO dto) {
+    public ApiResult<BmsPost> create(@RequestHeader(value = USER_NAME) String userName, @RequestBody CreateTopicDTO dto) {
         UmsUser user = umsUserService.getUserByUsername(userName);
         Assert.isTrue(user.getStatus(), "用户已被封禁，请联系管理员");
         BmsPost topic = bmsPostService.create(dto, user);
@@ -77,6 +82,8 @@ public class BmsPostController extends BaseController {
         Assert.notNull(byId, "来晚一步，话题已不存在");
         Assert.isTrue(byId.getUserId().equals(umsUser.getId()) || umsUser.getIsAdmin(), "你为什么可以删除别人的话题？？？");
         Assert.isTrue(umsUser.getStatus(), "用户已被封禁，请联系管理员");
+        List<String> tagIds = bmsTopicTagService.list(new LambdaQueryWrapper<BmsTopicTag>().eq(BmsTopicTag::getTopicId, id)).stream().map(BmsTopicTag::getTagId).toList();
+        bmsTagService.removeTags(tagIds);
         bmsPostService.removeById(id);
         return ApiResult.success(null, "删除成功");
     }

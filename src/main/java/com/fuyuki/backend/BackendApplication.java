@@ -7,11 +7,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 
 
 @SpringBootApplication
 @MapperScan("com.fuyuki.backend.mapper")
+@EnableCaching
 public class BackendApplication extends SpringBootServletInitializer{
 
     @Override

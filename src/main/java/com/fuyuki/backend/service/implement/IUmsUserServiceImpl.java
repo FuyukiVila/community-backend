@@ -45,7 +45,7 @@ public class IUmsUserServiceImpl extends ServiceImpl<UmsUserMapper, UmsUser> imp
         UmsUser addUser = UmsUser.builder()
                 .username(dto.getName())
                 .alias(dto.getName())
-                .password(MD5Utils.getPwd(dto.getPass()))
+                .password(MD5Utils.getMD5String(dto.getPass()))
                 .email(dto.getEmail())
                 .createTime(new Date())
                 .status(Boolean.TRUE)
@@ -63,8 +63,7 @@ public class IUmsUserServiceImpl extends ServiceImpl<UmsUserMapper, UmsUser> imp
         String token = null;
         try {
             UmsUser user = getUserByUsername(dto.getUsername());
-            String encodePwd = MD5Utils.getPwd(dto.getPassword());
-            if(!encodePwd.equals(user.getPassword()))
+            if (!MD5Utils.checkPassword(dto.getPassword(), user.getPassword()))
             {
                 throw new Exception("密码错误");
             }
