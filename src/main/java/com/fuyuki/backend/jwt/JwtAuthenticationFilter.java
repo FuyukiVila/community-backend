@@ -26,7 +26,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/relationship/unsubscribe/*",
             "/relationship/validate/*",
             "/ums/user/ban/*",
-            "/ums/user/unban/*"
+            "/ums/user/unban/*",
+            "/ums/user/upload_avatar",
+            "/ums/user/delete_avatar/*",
+            "/file/upload"
     );
 
     @Override

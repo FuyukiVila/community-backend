@@ -1,30 +1,45 @@
 package com.fuyuki.backend.controller;
 
 import com.fuyuki.backend.common.api.ApiResult;
+import com.fuyuki.backend.model.entity.UmsUser;
+import com.fuyuki.backend.service.IUmsUserService;
 import com.fuyuki.backend.utils.MD5Utils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import static com.fuyuki.backend.jwt.JwtUtil.USER_NAME;
+
 @Controller
-public class FileUploadController {
+@RequestMapping("/file")
+public class MarkDownFileUploadController {
+
+    @Resource
+    private IUmsUserService umsUserService;
 
     private static final String UPLOAD_DIR = "src/static/uploads/";
 
-    @PostMapping("/file/upload")
+    @PostMapping("/upload")
     @ResponseBody
-    public ResponseEntity<ApiResult<String>> uploadFile(@RequestParam("file") MultipartFile file) {
-        Assert.notNull(file, "文件不能为空");
+    public ResponseEntity<ApiResult<String>> uploadFile(@RequestHeader(value = USER_NAME) String userName, @RequestParam("file") MultipartFile file) {
+        UmsUser user = umsUserService.getUserByUsername(userName);
+        if (file == null) {
+            return ResponseEntity.status(500).body(ApiResult.failed("文件不能为空"));
+        }
+        if (user == null) {
+            return ResponseEntity.status(500).body(ApiResult.failed("用户不存在"));
+        }
+        if (!user.getStatus()) {
+            return ResponseEntity.status(500).body(ApiResult.failed("用户已被封禁，请联系管理员"));
+        }
         try {
             // 创建上传目录
             Path uploadPath = Paths.get(UPLOAD_DIR);

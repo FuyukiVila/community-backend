@@ -10,6 +10,8 @@ public class CommentVO {
 
     private String id;
 
+    private String avatar;
+
     private String content;
 
     private String topicId;

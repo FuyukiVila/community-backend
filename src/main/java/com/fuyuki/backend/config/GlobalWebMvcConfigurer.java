@@ -48,7 +48,7 @@ public class GlobalWebMvcConfigurer implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // 将 /uploads 映射到 src/main/resources/static/uploads 目录
-        registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:src/static/uploads/");
+        registry.addResourceHandler("/uploads/**", "/avatar/**")
+                .addResourceLocations("file:src/static/uploads/", "file:src/static/avatar/");
     }
 }
