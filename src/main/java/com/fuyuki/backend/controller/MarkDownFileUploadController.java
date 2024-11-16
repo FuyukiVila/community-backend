@@ -56,7 +56,7 @@ public class MarkDownFileUploadController {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
             // 返回文件的访问路径
-            String fileUrl = "http://127.0.0.1:8081/uploads/" + hashFileName;
+            String fileUrl = "http://localhost:%d/uploads/%s".formatted(8081, hashFileName);
             return ResponseEntity.ok(ApiResult.success(fileUrl));
         } catch (IOException e) {
             e.printStackTrace();

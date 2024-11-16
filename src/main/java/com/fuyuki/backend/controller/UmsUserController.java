@@ -155,7 +155,7 @@ public class UmsUserController extends BaseController {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
             // 返回文件的访问路径
-            String fileUrl = "http://127.0.0.1:8081/avatar/" + hashFileName;
+            String fileUrl = "http://localhost:%d/avatar/%s".formatted(8081, hashFileName);
             user.setAvatar(fileUrl);
             umsUserService.updateById(user);
             return ApiResult.success(fileUrl, "文件上传成功");

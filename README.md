@@ -6,6 +6,7 @@
 - mybatis-plus
 - 8 <= jdk <= 21
 - mariaDB
+- redis
 
 ## build
 

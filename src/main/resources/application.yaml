@@ -6,7 +6,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
-    url: jdbc:mysql://127.0.0.1:3306/community?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=GMT%2B8
+    url: jdbc:mysql://localhost:3306/community?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=GMT%2B8
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       connection-timeout: 30000 # 连接超时时间，单位为毫秒，默认30秒
