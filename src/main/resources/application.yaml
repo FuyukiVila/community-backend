@@ -18,6 +18,10 @@ spring:
     multipart:
       max-file-size: 30MB
       max-request-size: 30MB
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
 
 logging:
   level:
@@ -27,4 +31,5 @@ logging:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    cache-enabled: true
   mapper-locations: classpath:mapper/*.xml

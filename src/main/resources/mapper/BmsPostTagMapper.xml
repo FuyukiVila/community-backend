@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.fuyuki.backend.mapper.BmsTopicTagMapper">
+    <cache type="com.fuyuki.backend.common.cache.RedisCache"/>
     <select id="getTopicIdsByTagId" resultType="java.lang.String">
         SELECT distinct t.topic_id
         from bms_post_tag t
