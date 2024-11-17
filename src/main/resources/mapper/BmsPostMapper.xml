@@ -83,4 +83,23 @@
         ORDER BY t.view DESC, t.create_time DESC
     </select>
 
+    <insert id="insert" flushCache="true" parameterType="com.fuyuki.backend.model.entity.BmsPost">
+        INSERT INTO bms_post (id, title, user_id, content, create_time, modify_time)
+        VALUES (#{id}, #{title}, #{userId}, #{content}, #{createTime}, #{modifyTime})
+    </insert>
+
+    <update id="updateById" flushCache="true" parameterType="com.fuyuki.backend.model.entity.BmsPost">
+        UPDATE bms_post
+        set title       = #{title},
+            content     = #{content},
+            modify_time = #{modifyTime}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="removeById" flushCache="true" parameterType="java.lang.String">
+        DELETE
+        FROM bms_post
+        WHERE id = #{id}
+    </delete>
+
 </mapper>

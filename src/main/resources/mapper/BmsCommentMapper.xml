@@ -12,10 +12,22 @@
     </resultMap>
 
     <select id="getCommentsByTopicID" resultMap="topicVO">
-        select bms_comment.*, ums_user.username, ums_user.avatar
+        select bms_comment.*, ums_user.username, ums_user.avatar, ums_user.alias
         from bms_comment
                  join ums_user on ums_user.id = bms_comment.user_id
         where topic_id = #{topicid}
         order by create_time desc
     </select>
+
+    <insert id="insert" flushCache="true" parameterType="com.fuyuki.backend.model.entity.BmsComment">
+        INSERT INTO bms_comment(id, content, user_id, topic_id, create_time, modify_time)
+        VALUES (#{id}, #{content}, #{userId}, #{topicId}, #{createTime}, #{modifyTime})
+    </insert>
+
+    <delete id="removeById" flushCache="true" parameterType="java.lang.String">
+        DELETE
+        FROM bms_comment
+        WHERE id = #{id}
+    </delete>
+
 </mapper>

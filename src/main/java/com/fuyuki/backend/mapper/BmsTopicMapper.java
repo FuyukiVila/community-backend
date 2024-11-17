@@ -2,7 +2,6 @@ package com.fuyuki.backend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
 import com.fuyuki.backend.model.entity.BmsPost;
 import com.fuyuki.backend.model.vo.PostVO;
 import org.apache.ibatis.annotations.Param;
@@ -37,4 +36,8 @@ public interface BmsTopicMapper extends BaseMapper<BmsPost> {
      * @return
      */
     Page<PostVO> searchByKey(@Param("page") Page<PostVO> page, @Param("keyword") String keyword);
+
+    int insert(BmsPost post);
+
+    int updateById(BmsPost post);
 }
