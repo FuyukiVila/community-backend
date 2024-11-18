@@ -4,6 +4,7 @@ import com.fuyuki.backend.common.api.ApiResult;
 import com.fuyuki.backend.model.entity.UmsUser;
 import com.fuyuki.backend.service.IUmsUserService;
 import com.fuyuki.backend.utils.MD5Utils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -32,13 +33,13 @@ public class MarkDownFileUploadController {
     public ResponseEntity<ApiResult<String>> uploadFile(@RequestHeader(value = USER_NAME) String userName, @RequestParam("file") MultipartFile file) {
         UmsUser user = umsUserService.getUserByUsername(userName);
         if (file == null) {
-            return ResponseEntity.status(500).body(ApiResult.failed("文件不能为空"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResult.failed("文件不能为空"));
         }
         if (user == null) {
-            return ResponseEntity.status(500).body(ApiResult.failed("用户不存在"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResult.failed("用户不存在"));
         }
         if (!user.getStatus()) {
-            return ResponseEntity.status(500).body(ApiResult.failed("用户已被封禁，请联系管理员"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiResult.failed("用户已被封禁，请联系管理员"));
         }
         try {
             // 创建上传目录

@@ -8,10 +8,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResult<?>> handleRuntimeException(RuntimeException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResult.failed(ex.getMessage()));
+        if (ex.getMessage().contains("Token expired")) {
+            // 处理 Token 过期的情况
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResult.unauthorized(null));
+        } else {
+            // 处理其他运行时异常
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResult.failed(ex.getMessage()));
+        }
     }
 }
