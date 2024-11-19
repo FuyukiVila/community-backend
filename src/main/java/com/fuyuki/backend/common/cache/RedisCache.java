@@ -46,12 +46,14 @@ public class RedisCache implements Cache {
 
     @Override
     public void putObject(Object key, Object value) {
+        log.info("新增缓存 " + key.toString());
         redisTemplate.opsForValue().set(getKey(key), value, 5, TimeUnit.MINUTES);
     }
 
     @Override
     public Object getObject(Object key) {
         try {
+            log.info("获取缓存 " + key.toString());
             return redisTemplate.opsForValue().get(getKey(key));
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,6 +64,7 @@ public class RedisCache implements Cache {
 
     @Override
     public Object removeObject(Object o) {
+        log.info("删除缓存 " + o.toString());
         Object n = redisTemplate.opsForValue().get(getKey(o));
         redisTemplate.delete(getKey(o));
         return n;
@@ -69,6 +72,7 @@ public class RedisCache implements Cache {
 
     @Override
     public void clear() {
+        log.info("清空缓存");
         Set<String> keys = redisTemplate.keys(getKeys());
         if (CollectionUtil.isNotEmpty(keys)) {
             assert keys != null;

@@ -19,4 +19,5 @@ public interface BmsCommentMapper extends BaseMapper<BmsComment> {
      * @return
      */
     List<CommentVO> getCommentsByTopicID(@Param("topicid") String topicid);
+
 }
