@@ -39,6 +39,9 @@ public class BmsCommentController extends BaseController {
     public ApiResult<BmsComment> add_comment(@RequestHeader(value = USER_NAME) String userName, @Valid @RequestBody CommentDTO dto) {
         Assert.notNull(bmsPostService.getById(dto.getTopic_id()), "帖子不存在");
         UmsUser user = umsUserService.getUserByUsername(userName);
+        if (user == null) {
+            return ApiResult.unauthorized(null);
+        }
         Assert.isTrue(user.getStatus(), "用户已被封禁，请联系管理员");
         BmsComment comment = bmsCommentService.create(dto, user);
         return ApiResult.success(comment);
@@ -51,9 +54,12 @@ public class BmsCommentController extends BaseController {
 
         // 删除者是本人或管理员
         UmsUser user = umsUserService.getUserByUsername(userName);
-        Assert.notNull(user, "找不到用户");
-        Assert.isTrue(user.getId().equals(bmsCommentService.getById(id).getUserId()) || user.getIsAdmin(), "无权限删除");
-
+        if (user == null) {
+            return ApiResult.unauthorized(null);
+        }
+        if (!(user.getId().equals(bmsCommentService.getById(id).getUserId()) || user.getIsAdmin())) {
+            return ApiResult.forbidden(null);
+        }
         Assert.isTrue(user.getStatus(), "用户已被封禁，请联系管理员");
         bmsCommentService.removeById(id);
         return ApiResult.success("删除成功");
