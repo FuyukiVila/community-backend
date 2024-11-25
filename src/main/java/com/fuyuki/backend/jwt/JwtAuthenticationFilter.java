@@ -18,17 +18,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final List<String> protectedPaths = Arrays.asList(
             "/ums/user/info",
             "/ums/user/update",
-            "/post/create", "/post/update",
+            "/ums/user/ban/*",
+            "/ums/user/unban/*",
+            "/ums/user/upload_avatar",
+            "/ums/user/delete_avatar/*",
+            "/post/create",
+            "/post/update",
             "/post/delete/*",
             "/comment/add_comment",
             "/comment/delete_comment/*",
             "/relationship/subscribe/*",
             "/relationship/unsubscribe/*",
             "/relationship/validate/*",
-            "/ums/user/ban/*",
-            "/ums/user/unban/*",
-            "/ums/user/upload_avatar",
-            "/ums/user/delete_avatar/*",
             "/file/upload"
     );
 

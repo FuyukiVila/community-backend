@@ -28,6 +28,8 @@ public class MarkDownFileUploadController {
 
     private static final String UPLOAD_DIR = "src/static/uploads/";
 
+    private static final String HOST = "localhost";
+
     @PostMapping("/upload")
     @ResponseBody
     public ResponseEntity<ApiResult<String>> uploadFile(@RequestHeader(value = USER_NAME) String userName, @RequestParam("file") MultipartFile file) {
@@ -57,7 +59,7 @@ public class MarkDownFileUploadController {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
             // 返回文件的访问路径
-            String fileUrl = "http://localhost:%d/uploads/%s".formatted(8081, hashFileName);
+            String fileUrl = "http://%s:%d/uploads/%s".formatted(HOST, 8081, hashFileName);
             return ResponseEntity.ok(ApiResult.success(fileUrl));
         } catch (IOException e) {
             e.printStackTrace();

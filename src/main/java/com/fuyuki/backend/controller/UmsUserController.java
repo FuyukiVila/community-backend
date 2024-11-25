@@ -36,6 +36,8 @@ public class UmsUserController extends BaseController {
 
     private static final String UPLOAD_DIR = "src/static/avatar/";
 
+    private static final String HOST = "localhost";
+
     @Resource
     private IUmsUserService umsUserService;
     @Resource
@@ -80,7 +82,9 @@ public class UmsUserController extends BaseController {
     public ApiResult<Map<String, Object>> getUserByName(@PathVariable("username") String username, @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo, @RequestParam(value = "size", defaultValue = "10") Integer size) {
         Map<String, Object> map = new HashMap<>(16);
         UmsUser user = umsUserService.getUserByUsername(username);
-        Assert.notNull(user, "用户不存在");
+        if (user == null) {
+            return ApiResult.unauthorized(null);
+        }
         Page<BmsPost> page = bmsPostService.page(new Page<>(pageNo, size), new LambdaQueryWrapper<BmsPost>().eq(BmsPost::getUserId, user.getId()));
         ProfileVO profileVO = umsUserService.getUserProfile(user.getId());
         map.put("user", user);
@@ -90,22 +94,30 @@ public class UmsUserController extends BaseController {
     }
 
     @PostMapping("/update")
-    public ApiResult<UmsUser> updateUser(@Valid @RequestBody UmsUser umsUser) {
-        UmsUser user = umsUserService.getUserByUsername(umsUser.getUsername());
+    public ApiResult<UmsUser> updateUser(@RequestHeader(value = USER_NAME) String userName, @Valid @RequestBody UmsUser id) {
+        UmsUser operator = umsUserService.getUserByUsername(userName);
+        if (operator == null) {
+            return ApiResult.unauthorized(null);
+        }
+        UmsUser user = umsUserService.getUserByUsername(id.getUsername());
         Assert.notNull(user, "用户不存在");
-        Assert.isTrue(user.getStatus(), "用户已被封禁，请联系管理员");
-        user.setBio(umsUser.getBio());
-        user.setAlias(umsUser.getAlias());
-        user.setMobile(umsUser.getMobile());
-        user.setEmail(umsUser.getEmail());
+        if (!operator.getIsAdmin() && operator != user) {
+            return ApiResult.forbidden(null);
+        }
+        user.setBio(id.getBio());
+        user.setAlias(id.getAlias());
+        user.setMobile(id.getMobile());
+        user.setEmail(id.getEmail());
         umsUserService.updateById(user);
-        return ApiResult.success(umsUser);
+        return ApiResult.success(id);
     }
 
     @GetMapping("/ban/{id}")
     public ApiResult<?> banUser(@RequestHeader(value = USER_NAME) String userName, @PathVariable("id") String id) {
         UmsUser user = umsUserService.getUserByUsername(userName);
-        Assert.isTrue(user.getIsAdmin(), "没有权限");
+        if (user == null || !user.getIsAdmin()) {
+            return ApiResult.forbidden(null);
+        }
         UmsUser umsUser = umsUserService.getUserByUsername(id);
         Assert.notNull(umsUser, "用户不存在");
         Assert.isTrue(umsUser.getStatus(), "用户已封禁");
@@ -117,7 +129,9 @@ public class UmsUserController extends BaseController {
     @GetMapping("/unban/{id}")
     public ApiResult<?> unbanUser(@RequestHeader(value = USER_NAME) String userName, @PathVariable("id") String id) {
         UmsUser user = umsUserService.getUserByUsername(userName);
-        Assert.isTrue(user.getIsAdmin(), "没有权限");
+        if (user == null || !user.getIsAdmin()) {
+            return ApiResult.forbidden(null);
+        }
         UmsUser umsUser = umsUserService.getUserByUsername(id);
         Assert.notNull(umsUser, "用户不存在");
         Assert.isTrue(!umsUser.getStatus(), "用户已解封");
@@ -128,7 +142,7 @@ public class UmsUserController extends BaseController {
 
     @PostMapping("/upload_avatar")
     @ResponseBody
-    public ApiResult<String> uploadFile(@RequestHeader(value = USER_NAME) String userName, @RequestParam("file") MultipartFile file, HttpServletResponse response) {
+    public ApiResult<String> uploadAvatar(@RequestHeader(value = USER_NAME) String userName, @RequestParam("file") MultipartFile file, HttpServletResponse response) {
         if (file == null) {
             return ApiResult.failed("文件不能为空");
         }
@@ -155,7 +169,7 @@ public class UmsUserController extends BaseController {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
             // 返回文件的访问路径
-            String fileUrl = "http://localhost:%d/avatar/%s".formatted(8081, hashFileName);
+            String fileUrl = "http://%s:%d/avatar/%s".formatted(HOST, 8081, hashFileName);
             user.setAvatar(fileUrl);
             umsUserService.updateById(user);
             return ApiResult.success(fileUrl, "文件上传成功");
@@ -168,7 +182,9 @@ public class UmsUserController extends BaseController {
     @DeleteMapping("/delete_avatar/{id}")
     public ApiResult<?> deleteAvatar(@RequestHeader(value = USER_NAME) String userName, @PathVariable("id") String id) {
         UmsUser user = umsUserService.getUserByUsername(userName);
-        Assert.isTrue(user.getIsAdmin(), "没有权限");
+        if (user == null || !user.getIsAdmin()) {
+            return ApiResult.forbidden(null);
+        }
         UmsUser umsUser = umsUserService.getUserByUsername(id);
         Assert.notNull(umsUser, "用户不存在");
         umsUser.setAvatar("");
