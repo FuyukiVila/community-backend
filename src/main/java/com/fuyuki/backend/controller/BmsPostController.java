@@ -97,6 +97,7 @@ public class BmsPostController extends BaseController {
         Assert.isTrue(umsUser.getStatus(), "用户已被封禁，请联系管理员");
         List<String> tagIds = bmsTopicTagService.list(new LambdaQueryWrapper<BmsTopicTag>().eq(BmsTopicTag::getTopicId, id)).stream().map(BmsTopicTag::getTagId).toList();
         bmsTagService.removeTags(tagIds);
+        bmsTopicTagService.remove(new LambdaQueryWrapper<BmsTopicTag>().eq(BmsTopicTag::getTopicId, id));
         bmsPostService.removeById(id);
         return ApiResult.success(null, "删除成功");
     }
