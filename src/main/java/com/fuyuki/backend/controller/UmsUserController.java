@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.fuyuki.backend.jwt.JwtUtil.USER_NAME;
 
@@ -101,7 +102,7 @@ public class UmsUserController extends BaseController {
         }
         UmsUser user = umsUserService.getUserByUsername(id.getUsername());
         Assert.notNull(user, "用户不存在");
-        if (!operator.getIsAdmin() && operator != user) {
+        if (!operator.getIsAdmin() && !Objects.equals(operator.getUsername(), user.getUsername())) {
             return ApiResult.forbidden(null);
         }
         user.setBio(id.getBio());
@@ -148,10 +149,10 @@ public class UmsUserController extends BaseController {
         }
         UmsUser user = umsUserService.getUserByUsername(userName);
         if (user == null) {
-            return ApiResult.failed("用户不存在");
+            return ApiResult.unauthorized("用户不存在");
         }
         if (!user.getStatus()) {
-            return ApiResult.failed("用户已被封禁，请联系管理员");
+            return ApiResult.forbidden("用户已被封禁，请联系管理员");
         }
         try {
             // 创建上传目录
