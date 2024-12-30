@@ -20,7 +20,6 @@ import com.fuyuki.backend.service.IBmsTagService;
 import com.fuyuki.backend.service.IBmsTopicTagService;
 import com.fuyuki.backend.service.IUmsUserService;
 import com.vdurmont.emoji.EmojiParser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,14 +36,14 @@ public class IBmsPostServiceImpl extends ServiceImpl<BmsTopicMapper, BmsPost> im
     @Resource
     private UmsUserMapper umsUserMapper;
 
-    @Autowired
+    @Resource
     @Lazy
     private IBmsTagService iBmsTagService;
 
-    @Autowired
+    @Resource
     private IUmsUserService iUmsUserService;
 
-    @Autowired
+    @Resource
     private IBmsTopicTagService IBmsTopicTagService;
 
     @Override

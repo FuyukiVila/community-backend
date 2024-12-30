@@ -7,9 +7,9 @@ import com.fuyuki.backend.mapper.BmsTagMapper;
 import com.fuyuki.backend.model.entity.BmsPost;
 import com.fuyuki.backend.model.entity.BmsTag;
 import com.fuyuki.backend.service.IBmsTagService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -20,10 +20,10 @@ import java.util.Set;
 @Service
 public class IBmsTagServiceImpl extends ServiceImpl<BmsTagMapper, BmsTag> implements IBmsTagService {
 
-    @Autowired
+    @Resource
     private com.fuyuki.backend.service.IBmsTopicTagService IBmsTopicTagService;
 
-    @Autowired
+    @Resource
     private com.fuyuki.backend.service.IBmsPostService IBmsPostService;
 
 
